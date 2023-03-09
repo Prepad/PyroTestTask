@@ -8,6 +8,7 @@ use Prepad\PyroTestTask\Enums\ValidFileTypeEnum;
 use Prepad\PyroTestTask\Enums\ValidSiteMapChangeFreqEnum;
 use Prepad\PyroTestTask\Exceptions\DirectoryCreateException;
 use Prepad\PyroTestTask\Exceptions\EmptySavePathException;
+use Prepad\PyroTestTask\Exceptions\FileTypeMismatchException;
 use Prepad\PyroTestTask\Exceptions\InvalidFileTypeException;
 use Prepad\PyroTestTask\Interface\SiteMapGeneratorInterface;
 
@@ -19,8 +20,9 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
         string $savePath
     )
     {
-        $this->validateSavePath($savePath);
-        $this->validateFileType($filetype);
+        $fileInfo = pathinfo($savePath);
+        $this->validateSavePath($fileInfo['dirname']);
+        $this->validateFileType($filetype, $fileInfo['extension']);
         $this->generateMap($sitemap, $filetype, $savePath);
     }
 
@@ -66,11 +68,14 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
         }
     }
 
-    public function validateFileType(string $fileType):void
+    public function validateFileType(string $funcFileType, string $fileType):void
     {
         $acceptedFileType = array_column(ValidFileTypeEnum::cases(), 'value');
-        if (!in_array($fileType, $acceptedFileType)) {
+        if (!in_array($funcFileType, $acceptedFileType)) {
             throw new InvalidFileTypeException('Передан неверный тип файла');
+        }
+        if ($fileType != $funcFileType) {
+            throw new FileTypeMismatchException('Переданный тип файла и указанный тип файла в пути сохранения не совпадают');
         }
     }
 }

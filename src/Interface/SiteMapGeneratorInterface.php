@@ -39,8 +39,9 @@ interface SiteMapGeneratorInterface
     public function validateSavePath(string $savePath): void;
 
     /**
-     * @param string $sileType
+     * @param string $funcFileType
+     * @param string $fileType
      * @return void
      */
-    public function validateFileType(string $sileType): void;
+    public function validateFileType(string $funcFileType, string $fileType): void;
 }
