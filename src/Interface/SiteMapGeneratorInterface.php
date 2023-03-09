@@ -18,6 +18,7 @@ interface SiteMapGeneratorInterface
      * @param array $sitemap
      * @param string $filetype
      * @param string $savePath
+     * @return void
      */
     public function generateMap(
         array $sitemap,
@@ -27,11 +28,19 @@ interface SiteMapGeneratorInterface
 
     /**
      * @param array $pageData
+     * @return void
      */
     public function validatePage(array $pageData): void;
 
     /**
      * @param string $savePath
+     * @return void
      */
     public function validateSavePath(string $savePath): void;
+
+    /**
+     * @param string $sileType
+     * @return void
+     */
+    public function validateFileType(string $sileType): void;
 }
