@@ -38,7 +38,9 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
             throw new EmptySavePathException('Не задан путь для сохранения файла');
         }
         if(!is_dir($savePath)) {
-            if (!mkdir($savePath, 0777, true)) {
+            try {
+                mkdir($savePath, 0777, true);
+            } catch (\Exception $exception) {
                 throw new DirectoryCreateException('Ошибка создания директории для файла');
             };
         }
