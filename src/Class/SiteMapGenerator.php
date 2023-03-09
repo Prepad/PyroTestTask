@@ -56,6 +56,7 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
                     fwrite($file, '<changefreq>' . $page['changefreq'] . "</changefreq>\n");
                     fwrite($file, '</url>' . "\n");
                 }
+                fwrite($file, '</urlset>');
                 break;
         }
         fclose($file);
@@ -68,7 +69,7 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
             [
                 'loc' => 'required|URL',
                 'lastmod' => 'required|date',
-                'priority' => 'required|max:1.0|min:0.1',
+                'priority' => 'required|numeric|between:0.1,1',
                 'changefreq' => [
                     'required',
                     Rule::in(array_column(ValidSiteMapChangeFreqEnum::cases(), 'value')),
