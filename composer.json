@@ -1,0 +1,17 @@
+{
+    "name": "prepad/pyro-test-task",
+    "description": "test library for pyrobyte",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Prepad\\PyroTestTask\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "prepad",
+            "email": "prepadobnii@gmail.com"
+        }
+    ],
+    "require": {}
+}
