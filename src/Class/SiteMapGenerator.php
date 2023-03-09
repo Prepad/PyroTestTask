@@ -32,7 +32,33 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
         string $savePath
     ): void
     {
-        // TODO: Implement generateMap() method.
+        foreach ($sitemap as $page) {
+            $this->validatePage($page);
+        }
+        $file = fopen($savePath, 'w');
+        switch ($filetype) {
+            case 'json':
+                fwrite($file, json_encode($sitemap));
+                break;
+            case 'csv':
+                fwrite($file, 'loc;lastmod;priority;changefreq' . "\n");
+                foreach ($sitemap as $page) {
+                    fputcsv($file, $page, ';');
+                }
+                break;
+            case 'xml':
+                fwrite($file, '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . "\n");
+                foreach ($sitemap as $page) {
+                    fwrite($file, '<url>' . "\n");
+                    fwrite($file, '<loc>' . $page['loc'] . "</loc>\n");
+                    fwrite($file, '<lastmod>' . $page['lastmod'] . "</lastmod>\n");
+                    fwrite($file, '<priority>' . $page['priority'] . "</priority>\n");
+                    fwrite($file, '<changefreq>' . $page['changefreq'] . "</changefreq>\n");
+                    fwrite($file, '</url>' . "\n");
+                }
+                break;
+        }
+        fclose($file);
     }
 
     public function validatePage(array $pageData): void
