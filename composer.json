@@ -7,6 +7,7 @@
             "Prepad\\PyroTestTask\\": "src/"
         }
     },
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "prepad",
