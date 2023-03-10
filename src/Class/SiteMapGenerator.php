@@ -10,9 +10,8 @@ use Prepad\PyroTestTask\Exceptions\DirectoryCreateException;
 use Prepad\PyroTestTask\Exceptions\EmptySavePathException;
 use Prepad\PyroTestTask\Exceptions\FileTypeMismatchException;
 use Prepad\PyroTestTask\Exceptions\InvalidFileTypeException;
-use Prepad\PyroTestTask\Interface\SiteMapGeneratorInterface;
 
-class SiteMapGenerator implements SiteMapGeneratorInterface
+class SiteMapGenerator
 {
     public function __construct(
         array $sitemap,
@@ -26,7 +25,7 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
         $this->generateMap($sitemap, $filetype, $savePath);
     }
 
-    public function generateMap(
+    private function generateMap(
         array $sitemap,
         string $filetype,
         string $savePath
@@ -37,16 +36,16 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
         }
         $file = fopen($savePath, 'w');
         switch ($filetype) {
-            case 'json':
+            case ValidFileTypeEnum::JSON->value:
                 fwrite($file, json_encode($sitemap));
                 break;
-            case 'csv':
+            case ValidFileTypeEnum::CSV->value:
                 fwrite($file, 'loc;lastmod;priority;changefreq' . "\n");
                 foreach ($sitemap as $page) {
                     fputcsv($file, $page, ';');
                 }
                 break;
-            case 'xml':
+            case ValidFileTypeEnum::XML->value:
                 fwrite($file, '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . "\n");
                 foreach ($sitemap as $page) {
                     fwrite($file, '<url>' . "\n");
@@ -62,7 +61,7 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
         fclose($file);
     }
 
-    public function validatePage(array $pageData): void
+    private function validatePage(array $pageData): void
     {
         $validator = Validator::make(
             $pageData,
@@ -81,7 +80,7 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
         }
     }
 
-    public function validateSavePath(string $savePath): void
+    private function validateSavePath(string $savePath): void
     {
         if (empty($savePath)) {
             throw new EmptySavePathException('Не задан путь для сохранения файла');
@@ -95,7 +94,7 @@ class SiteMapGenerator implements SiteMapGeneratorInterface
         }
     }
 
-    public function validateFileType(string $funcFileType, string $fileType):void
+    private function validateFileType(string $funcFileType, string $fileType):void
     {
         $acceptedFileType = array_column(ValidFileTypeEnum::cases(), 'value');
         if (!in_array($funcFileType, $acceptedFileType)) {
